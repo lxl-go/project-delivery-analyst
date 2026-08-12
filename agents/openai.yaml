@@ -1,0 +1,6 @@
+interface:
+  display_name: "Project Delivery Analyst"
+  short_description: "项目理解、PRD、闭环设计、AI约束、开发修复门禁与合规交付"
+  default_prompt: "Use $project-delivery-analyst to classify the project/task, confirm requirements, analyze 0-1 or secondary-development context, generate PRD and delivery documents, create AI constraints, gate development/fix work, and produce task trace records."
+policy:
+  allow_implicit_invocation: true
