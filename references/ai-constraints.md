@@ -13,8 +13,9 @@ Prevent these failure modes:
 - Fake fixes that only change appearance or mock data.
 - Hard-coded URL, token, role, status, config, or third-party fields.
 - Production-unready code that ignores permissions, validation, transactions, idempotency, concurrency, logs, errors, and performance.
-- Invented third-party APIs, config, SDK usage, callbacks, or signatures.
+- Invented third-party APIs, config, SDK usage, callbacks, signatures, schemas, or performance numbers.
 - Frontend/backend mismatch, Chinese encoding pollution, large integer ID precision loss, and fake frontend implementation.
+- Sensitive information leaking into logs, examples, task traces, screenshots, commands, or generated documents.
 
 ## 2. Core Hard Rules
 
@@ -28,7 +29,7 @@ Prevent these failure modes:
 - Do not modify code without an affected-file list.
 - Register out-of-scope issues only; do not repair them.
 - Ask the user when third-party API docs, config, secrets, callbacks, signing rules, or SDK usage are missing.
-- Do not fabricate third-party fields or configuration.
+- Do not fabricate third-party fields, schemas, configuration, callbacks, signatures, SDK behavior, or performance numbers.
 - Do not present mock, sample, temporary, or local-only code as production-ready.
 - Do not hard-code URLs, tokens, roles, status values, or config unless the project has an explicit existing rule.
 - Consider permission, parameter validation, transactions, idempotency, concurrency, logs, exceptions, and performance.
@@ -37,6 +38,7 @@ Prevent these failure modes:
 - Avoid Chinese garbling or encoding pollution in code and documents.
 - Do not implement only frontend fake behavior; verify real interface closure.
 - If tests were not run, do not say "completed"; mark the status as `仍未闭环`.
+- Safe read-only inspection may continue while facts are being established, but it does not authorize modification or scope expansion.
 
 ## 3. Required Rule Dimensions
 
@@ -57,7 +59,15 @@ When generating project AI constraints, include only dimensions supported by pro
 - Out-of-scope issue registration rules.
 - Local-development relaxation and release correction rules.
 
-## 4. Code Quality Requirements
+## 4. Security And Logging
+
+- Never log passwords, tokens, session identifiers, signing secrets, private keys, payment data, or full sensitive request/response bodies.
+- Mask personal or business-sensitive identifiers unless the project has an explicit audit requirement.
+- Add logs only where they improve diagnosis, auditability, or state-transition visibility.
+- Keep log level and volume appropriate for production.
+- Do not expose secrets in examples, task traces, generated documents, test commands, or screenshots.
+
+## 5. Code Quality Requirements
 
 When implementation is allowed:
 
@@ -67,8 +77,9 @@ When implementation is allowed:
 - Record key state transitions.
 - Add concise comments for complex logic, idempotency, locks, transactions, money, permissions, or status decisions.
 - Comments must explain why the logic exists, not restate what the code does.
+- Do not add boilerplate logs, comments, locks, caches, or abstractions without a concrete need.
 
-## 5. Local Vs Release
+## 6. Local Vs Release
 
 Local development may temporarily use mocks, test config, switches, logs, or relaxed validation for testing convenience. These must be marked as local temporary items.
 
@@ -84,4 +95,3 @@ Before release, remind the user to correct or confirm:
 - Production performance, pagination, indexes, cache, and capacity.
 - Chinese encoding.
 - Large integer ID transfer safety.
-

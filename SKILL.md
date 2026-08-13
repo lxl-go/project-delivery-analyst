@@ -21,11 +21,13 @@ Use this skill as a combined product manager, full-stack architect, delivery com
 3. If the user asks for a single artifact, produce only that artifact. Do not expand into the full chain unless explicitly requested.
 4. Keep pure business requirements free of technical implementation terms. Put technical content only in hybrid requirement controlled sections or technical design/review documents.
 5. Do not invent project facts, metrics, tools, roles, or workflows. Mark unknown values as "待确认" and include a missing-input checklist.
-6. Use Mermaid for all diagrams.
-7. Run two review passes for full-chain work: first for document quality and completeness, second for compliance and traceability.
-8. Write final artifacts to files when the environment allows it. Use `.draft.md` for drafts and stable names for final deliverables.
-9. For development, fixes, or high-risk changes, do not modify code until the current batch, allowed scope, forbidden scope, chain contract, affected files, root cause or implementation plan, and human confirmation are established.
-10. For every conclusion, label its evidence state: `文档已确认`, `代码已存在`, `已测试通过`, or `仍未闭环`.
+6. Safe read-only inspection may be used to establish project evidence, but it never authorizes file modification or scope expansion.
+7. Use Mermaid for process, sequence, state, ER, and architecture diagrams; use structured text when a diagram would reduce clarity.
+8. Run two review passes for full-chain work: first for document quality and completeness, second for compliance and traceability.
+9. Write final artifacts to files when the environment allows it. Use `.draft.md` for drafts and stable names for final deliverables.
+10. For development, fixes, or high-risk changes, do not modify code until the current batch, allowed scope, forbidden scope, chain contract, affected files, root cause or implementation plan, and human confirmation are established.
+11. Do not fabricate third-party APIs, SDK behavior, callback signatures, schemas, production config, or performance numbers. Do not expose secrets in logs, examples, task traces, documents, commands, or screenshots.
+12. For every conclusion, label its evidence state: `文档已确认`, `代码已存在`, `已测试通过`, or `仍未闭环`.
 
 ## Workflow Router
 
@@ -90,6 +92,8 @@ python scripts/validate_project_delivery.py --skill-root .
 python scripts/validate_project_delivery.py --doc path/to/document.md --mode pure-business
 python scripts/validate_project_delivery.py --doc path/to/document.md --mode hybrid
 python scripts/validate_project_delivery.py --doc path/to/document.md --mode technical
+python scripts/validate_project_delivery.py --doc path/to/project-understanding.md --mode project-understanding
+python scripts/validate_project_delivery.py --doc path/to/task-trace.md --mode task-trace
 ```
 
 The script is an initial screen only. Always perform a human-quality semantic review after the script passes.

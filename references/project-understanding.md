@@ -4,7 +4,7 @@ Use this reference when the user may not understand an inherited project, or whe
 
 ## 1. Entry Rule
 
-Do not start with a full project scan by default. First ask the user to explain the project. If their explanation is incomplete, ask whether to perform a read-only project portrait.
+Do not start with a full project scan by default. First ask the user to explain the project. If their explanation is incomplete or project evidence is needed, perform a read-only project portrait using the smallest useful evidence set.
 
 Before scanning, state:
 
@@ -13,11 +13,14 @@ Before scanning, state:
 - Core analysis target.
 - Rule for unrelated findings: register only, do not repair.
 
+Read-only analysis may resolve ambiguity, but it does not authorize file modification, refactoring, dependency installation, or unrelated issue repair.
+
 ## 2. Read-Only Analysis Scope
 
-Analyze only the agreed project files. Prefer README, docs, package/module manifests, router files, API definitions, DTO/model files, database migrations, config examples, and representative service/controller files.
+Analyze only the agreed project files. Prefer README, docs, package/module manifests, router files, API definitions, DTO/model files, database migrations, config examples, representative service/controller files, target frontend entries, and task-specific logs.
 
 Do not modify files during project understanding.
+Expand read scope only when the first evidence set cannot answer the current question. State the reason for expansion before reading more files.
 
 ## 3. Project Portrait Output
 
@@ -40,6 +43,7 @@ Produce a human-readable report with evidence labels:
 - Reusable components, interfaces, utilities, services, and tables.
 - Differences between the current requirement and existing implementation.
 - Unknown or missing materials that require user input.
+- Evidence state for material findings: `文档已确认`, `代码已存在`, `已测试通过`, or `仍未闭环`.
 
 ## 4. Understanding Check
 
@@ -52,4 +56,3 @@ After the portrait, summarize:
 - What is still not closed.
 
 Ask the user to confirm before moving to PRD, implementation design, or code changes.
-

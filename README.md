@@ -21,19 +21,21 @@
 
 ## 安装方式
 
-把本仓库克隆到你的 Codex skills 目录：
+个人级安装推荐克隆到 Codex 当前支持的用户 skills 目录：
 
 ```bash
-git clone https://github.com/lxl-go/project-delivery-analyst.git ~/.codex/skills/project-delivery-analyst
+git clone https://github.com/lxl-go/project-delivery-analyst.git ~/.agents/skills/project-delivery-analyst
 ```
 
 Windows PowerShell 示例：
 
 ```powershell
-git clone https://github.com/lxl-go/project-delivery-analyst.git "$env:USERPROFILE\.codex\skills\project-delivery-analyst"
+git clone https://github.com/lxl-go/project-delivery-analyst.git "$env:USERPROFILE\.agents\skills\project-delivery-analyst"
 ```
 
-安装后重启 Codex，或刷新 Skills 配置，让 Codex 重新发现该 Skill。
+仓库级使用时，也可以放到项目的 `.agents/skills/project-delivery-analyst/`。已有环境如果仍从 `~/.codex/skills/` 加载，本仓库也保持兼容，但新安装优先使用 `.agents/skills`。
+
+Codex 通常会自动发现 skill 变更；如果没有显示，再重启 Codex。
 
 ## 目录结构
 

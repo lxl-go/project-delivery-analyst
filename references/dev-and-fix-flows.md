@@ -2,6 +2,14 @@
 
 Use this reference for project development, feature fixes, logic fixes, log analysis, root-cause analysis, and any code modification.
 
+## 0. Diagnose Before Editing
+
+Read-only diagnosis may proceed before a change confirmation gate when it is necessary to establish evidence. Inspect only the target-related code, logs, configuration, requests, responses, data conditions, or reproduction steps.
+
+Root-cause findings must map to concrete evidence such as a file, function, route, field, config, request/response, data condition, log, or reproduction result. If evidence is incomplete, label the conclusion as `仍未闭环` and do not present it as final.
+
+Read-only diagnosis never authorizes editing. Before any code modification, still complete the affected-file list, chain contract when applicable, implementation or repair plan, and human confirmation.
+
 ## 1. Development Flow
 
 ```text
@@ -49,6 +57,7 @@ Rules:
 - Do not fix unrelated issues found during scanning.
 - If another issue is strongly related to the current task, label it and include it in the final follow-up list; do not silently expand the fix.
 - Verify the real functional closed loop after repair.
+- Do not present mock, frontend-only, local-only, or sample behavior as a real fix.
 
 ## 3. Logic Fix Flow
 
@@ -74,6 +83,7 @@ Rules:
 - Confirm the business rule before reading implementation differences.
 - Do not change logic before requirement finalization.
 - Treat orders, payments, authentication, permissions, and status flows as high risk.
+- Treat destructive data operations, schema migrations, production incidents, secrets, third-party callbacks, and irreversible external side effects as high risk.
 
 ## 4. Acceptance Material
 
@@ -84,4 +94,3 @@ After a development or fix batch, output:
 - Per-scenario results: normal flow, boundary flow, exception flow, idempotency flow.
 - Current uncovered risks.
 - Follow-up issues outside the current batch.
-

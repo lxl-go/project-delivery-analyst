@@ -19,10 +19,10 @@ Flow weight:
 | Weight | Use When | Gate |
 | --- | --- | --- |
 | Light | Pure discussion or pure document generation | Concise boundary reminder; no code scan unless requested |
-| Medium | Read-only project analysis or secondary-development understanding | State read scope before scanning; no code changes |
+| Medium | Read-only project analysis or secondary-development understanding | State the smallest useful read scope before scanning; no code changes |
 | Strong | Development, feature fix, logic fix, high-risk change, or any code modification | Batch statement, gate table, chain contract, affected files, human confirmation |
 
-If the user intent is unclear, ask one clarifying question. Do not scan or modify code while the task mode is still unclear.
+If the user intent is unclear, ask one clarifying question. Safe read-only inspection may continue only when it can resolve ambiguity with project evidence. Do not modify code while the task mode is still unclear.
 
 ## 2. Project Startup
 
@@ -47,7 +47,7 @@ General startup chain:
 For vague ideas, ask one focused question at a time. Cover business background, target users, roles, core flow, MVP scope, non-functional needs, technical constraints, competitors, and expected outputs.
 
 - For 0-1 projects, read [prd-branch-flow.md](prd-branch-flow.md).
-- For secondary development, first ask whether the user understands the project. If not, read [project-understanding.md](project-understanding.md) and run a read-only project portrait.
+- For secondary development, first ask whether the user understands the project. If not, read [project-understanding.md](project-understanding.md) and run a read-only project portrait using the smallest useful evidence set.
 - Present a concise requirement summary and wait for explicit confirmation before writing formal artifacts.
 
 ## 4. Draft, Review, Finalize
@@ -75,6 +75,7 @@ For any code modification or high-risk fix, read [dev-and-fix-flows.md](dev-and-
 6. Human confirmation request.
 
 Do not expand the batch when a scan reveals unrelated issues. Register them as follow-up items only.
+Safe diagnosis and read-only inspection do not replace the human confirmation gate for code modification.
 
 ## 6. Delivery Standardization
 
