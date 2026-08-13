@@ -66,9 +66,14 @@ python scripts/validate_project_delivery.py --skill-root .
 
 ## 作者
 
-Original author: 李小龙 / lxl-go
+原作者：李小龙 / lxl-go
 
-如果你使用、修改或二次发布这个 Skill，请保留原作者信息和本仓库来源。
+协作改进：张浩宇 / haolihai-zhy  
+协作仓库：https://github.com/zhanghaoyu494-cell/project-delivery-analyst
+
+感谢张浩宇基于本 Skill 进行分支体验和协作改进。
+
+如果你使用、修改或二次发布这个 Skill，请保留原作者信息、本仓库来源和贡献者致谢。
 
 ## License
 
