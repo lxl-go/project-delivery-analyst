@@ -46,7 +46,7 @@ Read [workflow.md](references/workflow.md) first for the detailed sequence.
 - PRD only: read [prd-template.md](references/prd-template.md).
 - Diagrams only: read [diagrams-template.md](references/diagrams-template.md).
 - Technical plan only: read [tech-plan-template.md](references/tech-plan-template.md).
-- Database design only: read [database-template.md](references/database-template.md).
+- Database design or database change planning: read [database-modeling-workflow.md](references/database-modeling-workflow.md) first, then read [database-template.md](references/database-template.md).
 - Pure business, hybrid requirement, technical review, or project rules: read [output-modes.md](references/output-modes.md) and [doc-gen-rules.md](references/doc-gen-rules.md).
 - Review or compliance-only: read [review-template.md](references/review-template.md) and [compliance-rules.md](references/compliance-rules.md).
 

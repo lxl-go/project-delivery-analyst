@@ -51,6 +51,7 @@ Technical exploration must cover:
 - Performance optimization direction.
 - Technology stack, language, framework, framework directory.
 - Code style, code layers, and coding rules.
+- Database modeling inputs: business facts that must be persisted, business objects with independent lifecycles, business actions, state machines, business constraints, query/statistics scenarios, audit requirements, and data lifecycle. Read [database-modeling-workflow.md](database-modeling-workflow.md) before producing `database.md`.
 
 ## 3. Secondary Development PRD Flow
 
@@ -96,4 +97,8 @@ Requirement splitting must answer:
 - Which features or interfaces are required.
 - Which existing components, APIs, tables, services, or utilities can be reused.
 - Which differences exist between the new requirement and the existing project.
+- Which existing tables and fields are reused, extended, or avoided.
+- Whether any new table is necessary, and why existing tables cannot safely carry the new business fact.
+- Whether any database change affects old data, old APIs, old pages, reports, scheduled jobs, cache, import/export, or migration scripts.
+- For database design or database changes, read [database-modeling-workflow.md](database-modeling-workflow.md) before producing `database.md` or DDL guidance.
 

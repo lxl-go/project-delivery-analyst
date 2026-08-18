@@ -21,6 +21,7 @@ Analyze only the agreed project files. Prefer README, docs, package/module manif
 
 Do not modify files during project understanding.
 Expand read scope only when the first evidence set cannot answer the current question. State the reason for expansion before reading more files.
+For database-related secondary development, also map existing table semantics, field usage points, indexes, migration history, ORM models, DAO/repository access, DTO references, page usage, reports, scheduled jobs, cache keys, and import/export touchpoints inside the agreed scope.
 
 ## 3. Project Portrait Output
 
@@ -39,6 +40,8 @@ Produce a human-readable report with evidence labels:
 - Existing feature interfaces in each module.
 - Frontend page/button/API method to backend route mapping.
 - Database tables, key fields, and state flows.
+- Existing table semantic boundaries: what each relevant table currently means, which features depend on it, and which fields must not be reused with changed business meaning.
+- Database compatibility risks for the current requirement, including old data, old APIs, old pages, reports, scheduled jobs, cache, import/export, and migration scripts.
 - Existing exception-handling style.
 - Reusable components, interfaces, utilities, services, and tables.
 - Differences between the current requirement and existing implementation.
