@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Delivery Analyst"
-  short_description: "通用任务路由、项目理解、PRD、开发门禁与合规交付"
-  default_prompt: "Use $project-delivery-analyst to classify the task, confirm the smallest useful scope, and route to the correct references for PRD, project understanding, AI workflow/batch gates, OpenSpec/Loops, development/fix, release, and task trace. When implementation language is not specified by the project or user, default to Go. Produce evidence-labeled deliverables without expanding scope."
+  short_description: "通用任务路由、项目理解、PRD、规则包、开发门禁与合规交付"
+  default_prompt: "Use $project-delivery-analyst to classify the task through entry, general, and specialty layers; confirm the smallest useful scope; and route to the correct references for PRD, project understanding, repository rulepacks, AI workflow/batch gates, OpenSpec/Loops, development/fix, release, and task trace. When implementation language is not specified by the project or user, default to Go. Produce evidence-labeled deliverables without expanding scope."
 policy:
   allow_implicit_invocation: true

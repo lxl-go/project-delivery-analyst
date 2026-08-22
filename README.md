@@ -2,7 +2,7 @@
 
 版本：`v1.3.0`
 
-`project-delivery-analyst` 是一个面向 Codex / AI 编程助手的通用任务路由 Skill。它不只处理项目交付，还负责先判断任务该走哪条路，再按需进入需求梳理、项目理解、技术设计、数据库设计、接口落地、AI 工作流约束、开发门禁、任务追溯、发布准备和合规校验。
+`project-delivery-analyst` 是一个面向 Codex / AI 编程助手的通用任务路由 Skill。它不只处理项目交付，还负责先判断任务该走哪条路，再按需进入需求梳理、项目理解、技术设计、数据库设计、接口落地、AI 工作流约束、仓库规则工作流包、开发门禁、任务追溯、发布准备和合规校验。
 
 它适合用于 0-1 项目启动、二次开发项目接手、功能修复、逻辑修复、交付文档生成、上线前纠偏，以及给 AI 编程助手生成项目级约束规则。若任务本身不是交付类，它会优先做分流和最小必要检查，而不是强行套完整流程。
 
@@ -23,6 +23,20 @@
 - 交付审查：检查文档、代码、测试、发布和风险是否闭环。
 
 它的目标不是替代人工确认，而是让 AI 在进入实现前先把范围、证据、链路和验收标准讲清楚。默认后端实现语言按 Go 处理，除非仓库或用户明确给出其他语言。
+
+## 三层运行架构
+
+### 1. 入口层
+
+先判断任务类型：问答、排障、写文档、改代码、做计划、做评审、发版、复盘。入口层只负责分流，不会把低风险任务强行套进 PRD、批次门禁或链路契约。
+
+### 2. 通用层
+
+保留所有任务都需要的基本约束：先看上下文、先给结论、不确定就标 `待确认` 或 `仍未闭环`、只改相关范围、用证据说话。
+
+### 3. 专长层
+
+只有任务真的需要时才加载对应模块，例如 PRD、数据库、接口、发布、任务追踪、OpenSpec / Loops、仓库规则工作流包、开发修复门禁。
 
 ## 能做什么
 
@@ -177,6 +191,34 @@ Loops 思路用于控制执行：每轮只读当前阶段和短摘要，失败�
 - 修复建议
 - 仍未闭环事项
 
+### 10. 仓库规则工作流包
+
+适用于“给项目生成 AGENTS.md”“把 AI 研发规则落到仓库”“生成 aiDoc / workflow 目录”“建立 REQ / BUG / CHORE 工作项闭环”这类任务。
+
+它会把 AI 协作规则拆成仓库内可追溯材料，让项目不只靠聊天记录维持上下文。
+
+可产出：
+
+- `AGENTS.md`
+- `aiDoc/README.md`
+- `aiDoc/relations/`
+- `aiDoc/modules/`
+- `aiDoc/frontend-backend/`
+- `aiDoc/examples/`
+- `aiDoc/memory/`
+- `workflow/README.md`
+- `workflow/standards/`
+- `workflow/work-items/active/<WORK-ID>.md`
+- `workflow/openspec/changes/<WORK-ID>/proposal.md`
+- `workflow/openspec/changes/<WORK-ID>/spec.md`
+- `workflow/openspec/changes/<WORK-ID>/design.md`
+- `workflow/openspec/changes/<WORK-ID>/tasks.md`
+- `workflow/openspec/changes/<WORK-ID>/summary.md`
+- `workflow/test-reports/`
+- `workflow/release-plans/`
+- `workflow/learnings/`
+- `workflow/waivers/`
+
 ## 内置工作流
 
 ### 轻流程：讨论或单文档输出
@@ -242,6 +284,22 @@ REQ / BUG / CHORE 工作项
 
 效果：聊天记录不再是唯一证据，后续接手的人可以从仓库文档追溯来龙去脉。
 
+### 仓库规则工作流包生成流
+
+适用于要把 AI 协作规则一次性沉淀进仓库的项目。
+
+```text
+确认项目类型和默认语言
+-> 生成 AGENTS.md
+-> 生成 aiDoc 上下文层
+-> 生成 workflow 研发闭环层
+-> 生成工作项和 OpenSpec 模板
+-> 生成测试、发布、经验和豁免目录
+-> 输出落地说明和后续维护规则
+```
+
+效果：把 AI 读什么、改什么、怎么验、怎么发布、怎么复盘全部放进仓库文件。
+
 ### OpenSpec / Loops 有界执行流
 
 适用于 AI 多轮开发、复杂修复和长上下文任务。
@@ -265,6 +323,7 @@ proposal
 - 链路更完整：前端、接口、后端、数据库、状态和验收一起看。
 - 证据更可靠：结论必须区分 `文档已确认`、`代码已存在`、`已测试通过`、`仍未闭环`。
 - 交付更可追溯：PRD、设计、任务追溯、测试和发布材料可以互相对应。
+- 仓库规则更完整：可以生成 AGENTS、aiDoc、workflow、OpenSpec、测试报告、发布计划和经验沉淀骨架。
 - 风险更可控：未测试、未联调、未确认的内容不会被包装成完成。
 - 更适合二次开发：先识别已有能力和复用点，再决定最小改动。
 - 更适合团队协作：后来者可以根据文档知道为什么这么做、怎么验证、还有什么风险。
@@ -284,6 +343,7 @@ proposal
 - “读取这个二次开发项目，先输出项目画像。”
 - “这个按钮到后端接口怎么闭环，帮我写接口落地指导。”
 - “给这个项目生成 AI 约束规则，禁止 AI 乱改。”
+- “给这个项目生成 AGENTS.md、aiDoc 和 workflow 规则包。”
 - “按批次修复这个 bug，先输出门禁表和链路契约。”
 - “把这次改动整理成任务追溯和发布说明。”
 - “检查这份技术评审有没有缺项。”
@@ -300,6 +360,7 @@ project-delivery-analyst/
 │   ├── repository-workflow.md
 │   ├── openspec-loops.md
 │   ├── ai-constraints.md
+│   ├── repository-rulepack.md
 │   ├── project-understanding.md
 │   ├── interface-implementation-guide.md
 │   ├── database-modeling-workflow.md
