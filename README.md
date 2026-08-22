@@ -1,43 +1,33 @@
 # Project Delivery Analyst
 
-面向 Codex / AI 编程助手的项目交付分析 Skill，适合用来做需求梳理、PRD、技术方案、数据库设计、接口落地指导、AI 开发约束、任务追溯、上线前检查和合规校验。
+Version: `v1.3.0`
 
-## 能做什么
+This repository packages the main delivery-router skill for Codex. It now covers project understanding, PRD and design work, AI workflow gating, OpenSpec / Loops routing, task trace, release preparation, and compliance review.
 
-- 从项目想法、PRD、工单、日志、竞品材料中梳理需求。
-- 分析二次开发项目，输出项目画像和可复用资源说明。
-- 生成 PRD、技术方案、数据库设计、接口文档和前后端闭环说明。
-- 生成 AI 开发约束规则、批次门禁、任务追溯文档和上线前检查清单。
-- 对业务需求、混合需求、技术评审和交付文档做合规校验。
+## What changed in v1.3.0
 
-## 适用场景
+- Added repository-native workflow routing for batch gates and chain contracts.
+- Added explicit OpenSpec / Loops references for bounded execution.
+- Rewrote the entry skill to behave like a main router instead of a flat checklist.
+- Reworked this README into a release-oriented package guide.
 
-当你希望 Codex 或其他 AI 编程助手处理下面这些任务时，可以使用这个 Skill：
+## What it can do
 
-- 梳理需求、写 PRD、出技术方案、做数据库设计。
-- 做二次开发项目理解、项目画像、接口落地指导。
-- 制定开发约束规则、修复门禁、批次隔离规则。
-- 生成任务追溯、上线前检查、合规校验报告。
+- Turn vague ideas, PRDs, logs, and inherited repos into scoped delivery artifacts.
+- Produce PRD, technical plan, database, interface, and frontend/backend closure documents.
+- Route AI workflow work through batch isolation, affected-file lists, and evidence labels.
+- Produce task trace, release notes, and compliance outputs without expanding scope.
 
-## 安装方式
+## Routing map
 
-个人级安装推荐克隆到 Codex 当前支持的用户 skills 目录：
+- New idea or unclear scope: `references/project-startup.md`, `references/interview-questions.md`, `references/prd-branch-flow.md`
+- Repo understanding: `references/project-understanding.md`
+- PRD and delivery docs: `references/prd-template.md`, `references/output-modes.md`, `references/doc-gen-rules.md`
+- AI workflow and gates: `references/repository-workflow.md`, `references/ai-constraints.md`, `references/workflow.md`
+- OpenSpec and Loops: `references/openspec-loops.md`
+- Release: `references/release-checklist.md`, `references/releases-v1.3.0.md`
 
-```bash
-git clone https://github.com/lxl-go/project-delivery-analyst.git ~/.agents/skills/project-delivery-analyst
-```
-
-Windows PowerShell 示例：
-
-```powershell
-git clone https://github.com/lxl-go/project-delivery-analyst.git "$env:USERPROFILE\.agents\skills\project-delivery-analyst"
-```
-
-仓库级使用时，也可以放到项目的 `.agents/skills/project-delivery-analyst/`。已有环境如果仍从 `~/.codex/skills/` 加载，本仓库也保持兼容，但新安装优先使用 `.agents/skills`。
-
-Codex 通常会自动发现 skill 变更；如果没有显示，再重启 Codex。
-
-## 目录结构
+## Package layout
 
 ```text
 project-delivery-analyst/
@@ -45,35 +35,49 @@ project-delivery-analyst/
 ├── agents/
 │   └── openai.yaml
 ├── references/
-│   ├── workflow.md
-│   ├── ai-constraints.md
-│   ├── prd-template.md
-│   ├── tech-plan-template.md
-│   └── ...
-└── scripts/
-    └── validate_project_delivery.py
+├── scripts/
+│   └── validate_project_delivery.py
+└── tests/
 ```
 
-## 校验
+## Validation
 
-可以运行内置校验脚本做基础结构检查：
+Run the built-in structural check:
 
 ```bash
 python scripts/validate_project_delivery.py --skill-root .
 ```
 
-脚本只做初步结构筛查，正式交付前仍需要人工语义复核。
+This is only the first screen. Keep a human semantic review before treating the skill as ready.
 
-## 作者
+## Release notes
 
-原作者：李小龙 / lxl-go
+- `v1.3.0`: main-router upgrade, AI workflow routing, OpenSpec / Loops support, README refresh.
+- `v1.2.0`: evidence-driven database modeling workflow.
 
-协作改进：张浩宇 / haolihai-zhy  
-协作仓库：https://github.com/zhanghaoyu494-cell/project-delivery-analyst
+## Installation
 
-感谢张浩宇基于本 Skill 进行分支体验和协作改进。
+Clone the repository into the Codex skill directory you actually use, then reload Codex if needed.
 
-如果你使用、修改或二次发布这个 Skill，请保留原作者信息、本仓库来源和贡献者致谢。
+```bash
+git clone https://github.com/lxl-go/project-delivery-analyst.git ~/.codex/skills/project-delivery-analyst
+```
+
+PowerShell example:
+
+```powershell
+git clone https://github.com/lxl-go/project-delivery-analyst.git "$env:USERPROFILE\.codex\skills\project-delivery-analyst"
+```
+
+## Authors
+
+Original author: 李小龙 / lxl-go
+
+Collaboration improvements: 张浩宇 / haolihai-zhy
+
+Collaboration repository: https://github.com/zhanghaoyu494-cell/project-delivery-analyst
+
+If you use, modify, or redistribute this skill, keep the original author, repository source, and contributor acknowledgement.
 
 ## License
 

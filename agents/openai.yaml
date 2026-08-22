@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Delivery Analyst"
-  short_description: "项目理解、PRD、证据驱动数据库设计、开发门禁与合规交付"
-  default_prompt: "Use $project-delivery-analyst to classify the project/task, confirm requirements, analyze 0-1 or secondary-development context, generate PRD and evidence-driven database/delivery documents, create AI constraints, gate development/fix work, and produce task trace records."
+  short_description: "项目理解、PRD、AI工作流、开发门禁与合规交付"
+  default_prompt: "Use $project-delivery-analyst to classify the project/task, confirm scope, route to the correct references for PRD, project understanding, AI workflow/batch gates, OpenSpec/Loops, development/fix, release, and task trace, then produce evidence-labeled deliverables without expanding scope."
 policy:
   allow_implicit_invocation: true

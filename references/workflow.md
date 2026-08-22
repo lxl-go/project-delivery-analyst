@@ -95,3 +95,13 @@ For compliance-only requests:
 2. Check red-line violations, missing sections, unsupported claims, and traceability gaps.
 3. Do not rewrite the original document unless the user asks for remediation.
 4. Output specific issue locations and an actionable remediation list.
+
+## 8. Repository-Native AI Workflow
+
+When the user asks for AI workflow rules, batch gates, task traces, or bounded execution, route through:
+
+- [repository-workflow.md](repository-workflow.md)
+- [openspec-loops.md](openspec-loops.md)
+- [ai-constraints.md](ai-constraints.md)
+
+Use these references to keep the task scoped, keep evidence labels consistent, and separate implementation claims from release readiness.

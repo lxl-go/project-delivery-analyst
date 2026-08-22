@@ -1,87 +1,50 @@
 ---
 name: project-delivery-analyst
-description: 项目交付分析、PRD 确认、竞品分析、二次开发项目理解、前后端闭环设计、接口代码级落地指导、AI 约束规则生成、开发/修复门禁、任务追溯、上线前纠偏与合规校验一体化技能。用于从 0-1 新项目想法、二次开发项目 README/代码仓库、工单、PRD、日志、报错、竞品材料中梳理需求，产出 PRD、前端页面布局说明书、前后端闭环说明书、接口功能实现过程指导文档、接口文档、数据库设计、需求分析、技术评审、项目 AI 约束规则、docs/task-trace 任务追溯文档和合规报告。当用户说“梳理需求”“写 PRD”“出技术方案”“数据库设计”“交付文档”“技术评审”“约束规则”“合规校验”“二次开发”“项目画像”“功能修复”“逻辑修复”“接口落地指导”“从想法到项目文档”时使用。
+description: 项目理解、PRD、AI工作流、开发门禁、任务追溯与合规交付一体化技能。用于从 0-1 想法、二次开发仓库、工单、PRD、日志、报错和竞品材料中梳理需求，并按仓库原生工作流输出 PRD、技术方案、数据库设计、前后端闭环、OpenSpec/Loops 约束、任务追溯和发布材料。
 ---
 
 # Project Delivery Analyst
 
 ## Overview
 
-Use this skill as a combined product manager, full-stack architect, delivery compliance reviewer, and AI development guardrail designer. It merges four strengths:
+Use this skill as the main router for project delivery, repo understanding, AI workflow gating, and release preparation.
 
-- Requirements Analyst: clarify vague ideas through conversation, then produce PRD, diagrams, technical plan, and database design.
-- DOC-GEN-CHECK style delivery control: split pure business, hybrid requirement, and technical review outputs, enforce red lines, and generate actionable compliance reports.
-- Secondary-development analyst: help the user understand an existing project before changing it.
-- Development/fix gatekeeper: prevent unbounded scanning, speculative fixes, fake completion, hard-coded implementation, and production-unready code.
+## What it covers
 
-## Core Rules
+- Requirements, PRD, design, database, interface, task trace, and compliance review.
+- Secondary-development understanding and repository portraits.
+- AI workflow: batch gates, chain contracts, OpenSpec, Loops, and release checks.
+- Development/fix guardrails: no broad scans, no out-of-scope repairs, no fake completion.
 
-1. Determine the user's current intent and flow weight before producing artifacts: discussion/documentation light flow, read-only analysis medium flow, or development/fix strong flow.
-2. If the request starts from a vague idea, interview first. Do not produce formal documents until the user confirms the requirement summary.
-3. If the user asks for a single artifact, produce only that artifact. Do not expand into the full chain unless explicitly requested.
-4. Keep pure business requirements free of technical implementation terms. Put technical content only in hybrid requirement controlled sections or technical design/review documents.
-5. Do not invent project facts, metrics, tools, roles, or workflows. Mark unknown values as "待确认" and include a missing-input checklist.
-6. Safe read-only inspection may be used to establish project evidence, but it never authorizes file modification or scope expansion.
-7. Use Mermaid for process, sequence, state, ER, and architecture diagrams; use structured text when a diagram would reduce clarity.
-8. Run two review passes for full-chain work: first for document quality and completeness, second for compliance and traceability.
-9. Write final artifacts to files when the environment allows it. Use `.draft.md` for drafts and stable names for final deliverables.
-10. For development, fixes, or high-risk changes, do not modify code until the current batch, allowed scope, forbidden scope, chain contract, affected files, root cause or implementation plan, and human confirmation are established.
-11. Do not fabricate third-party APIs, SDK behavior, callback signatures, schemas, production config, or performance numbers. Do not expose secrets in logs, examples, task traces, documents, commands, or screenshots.
-12. For every conclusion, label its evidence state: `文档已确认`, `代码已存在`, `已测试通过`, or `仍未闭环`.
+## Core rules
 
-## Workflow Router
+1. Classify every task by project type and flow weight.
+2. If the scope is unclear, ask one focused question or do minimal read-only inspection.
+3. Keep pure-business output free of implementation terms.
+4. Mark unknown facts as `待确认`.
+5. For strong flow, state current batch, allowed/forbidden scope, chain contract, affected files, and confirmation gate before editing.
+6. Use evidence labels: `文档已确认`, `代码已存在`, `已测试通过`, `仍未闭环`.
+7. Do not modify code until the batch gate and human confirmation are established.
 
-Read [workflow.md](references/workflow.md) first for the detailed sequence.
+## Routing
 
-- Project startup, project type classification, or flow-weight selection: read [project-startup.md](references/project-startup.md).
-- New idea, unclear scope, or 0-1 project discovery: read [interview-questions.md](references/interview-questions.md), collect context one question at a time, present a summary, and wait for confirmation.
-- 0-1 project or secondary-development PRD branch: read [prd-branch-flow.md](references/prd-branch-flow.md).
-- Secondary-development project understanding or read-only project portrait: read [project-understanding.md](references/project-understanding.md).
-- Interface implementation guide or frontend/backend closed-loop design: read [interface-implementation-guide.md](references/interface-implementation-guide.md).
-- AI project constraints, batch gate rules, or development guardrails: read [ai-constraints.md](references/ai-constraints.md).
-- Development, feature fix, logic fix, logs, root-cause analysis, or repair flow: read [dev-and-fix-flows.md](references/dev-and-fix-flows.md).
-- Task trace documents: read [task-trace-template.md](references/task-trace-template.md).
-- Release readiness or上线前纠偏: read [release-checklist.md](references/release-checklist.md).
-- Cross-platform installation or using this skill outside Codex: read [cross-platform-adapter.md](references/cross-platform-adapter.md).
-- PRD only: read [prd-template.md](references/prd-template.md).
-- Diagrams only: read [diagrams-template.md](references/diagrams-template.md).
-- Technical plan only: read [tech-plan-template.md](references/tech-plan-template.md).
-- Database design or database change planning: read [database-modeling-workflow.md](references/database-modeling-workflow.md) first, then read [database-template.md](references/database-template.md).
-- Pure business, hybrid requirement, technical review, or project rules: read [output-modes.md](references/output-modes.md) and [doc-gen-rules.md](references/doc-gen-rules.md).
-- Review or compliance-only: read [review-template.md](references/review-template.md) and [compliance-rules.md](references/compliance-rules.md).
+- New idea or unclear scope: [references/project-startup.md](references/project-startup.md), [references/interview-questions.md](references/interview-questions.md), [references/prd-branch-flow.md](references/prd-branch-flow.md)
+- Secondary-development understanding: [references/project-understanding.md](references/project-understanding.md)
+- PRD or requirement docs: [references/prd-template.md](references/prd-template.md), [references/output-modes.md](references/output-modes.md), [references/doc-gen-rules.md](references/doc-gen-rules.md)
+- Interface or front/back closure: [references/interface-implementation-guide.md](references/interface-implementation-guide.md)
+- Database design: [references/database-modeling-workflow.md](references/database-modeling-workflow.md), [references/database-template.md](references/database-template.md)
+- AI workflow / batch gates: [references/repository-workflow.md](references/repository-workflow.md), [references/ai-constraints.md](references/ai-constraints.md), [references/workflow.md](references/workflow.md)
+- OpenSpec / Loops: [references/openspec-loops.md](references/openspec-loops.md)
+- Development or fix: [references/dev-and-fix-flows.md](references/dev-and-fix-flows.md)
+- Task trace: [references/task-trace-template.md](references/task-trace-template.md)
+- Release: [references/release-checklist.md](references/release-checklist.md), [references/releases-v1.3.0.md](references/releases-v1.3.0.md)
+- Cross-platform install: [references/cross-platform-adapter.md](references/cross-platform-adapter.md)
 
-## Standard Artifacts
+## Output discipline
 
-Discovery and design artifacts:
-
-- `PRD.draft.md` / `PRD.md`
-- `diagrams.draft.md` / `diagrams.md`
-- `tech-plan.draft.md` / `tech-plan.md`
-- `database.draft.md` / `database.md`
-- `frontend-layout.md`
-- `frontend-backend-closed-loop.md`
-- `interface-implementation-guide.md`
-- `project-understanding.md`
-
-Delivery and compliance artifacts:
-
-- `business-requirements.md`
-- `hybrid-requirements.md`
-- `technical-review.md`
-- `.dev-rules/rule/` project rule documents
-- `project-ai-constraints.md`
-- `docs/task-trace/README.md`
-- `docs/task-trace/YYYY-MM-DD/task-001-name.md`
-- `release-checklist.md`
-- `cross-platform-adapter.md`
-- `compliance-report.md`
-- `review-1.md` and `review-2.md`
-
-## Mode Gate Summary
-
-- Light flow: pure discussion or document generation. Use concise boundary reminders, ask one focused question at a time, and do not scan or modify project code unless requested.
-- Medium flow: read-only project analysis or secondary-development understanding. State the read scope first, inspect only that scope, and produce a project portrait or reusable-resource analysis. Do not modify code.
-- Strong flow: development, feature fixes, logic fixes, high-risk modules, or code changes. Start with batch isolation, gate table, chain contract, affected-file list, evidence-labeled diagnosis or plan, and wait for human confirmation before editing.
+- Write final artifacts to files when the task requires them.
+- Keep conclusions tied to evidence.
+- Do not invent third-party APIs, configs, schemas, or performance numbers.
 
 ## Validation
 
