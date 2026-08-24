@@ -15,11 +15,12 @@ Use three layers in order:
 
 1. Entry layer: classify whether the request is question answering, troubleshooting, document writing, code change, planning, review, release, or recap. This layer routes the task; it does not force PRD, batch gates, or chain contracts onto low-risk work.
 2. General layer: keep context first, conclusion first, evidence-labeled, scope-limited, and explicit about unknowns. Mark uncertain facts as `待确认` or `仍未闭环`.
-3. Specialty layer: load only the relevant reference for PRD, database, interface, release, task trace, OpenSpec/Loops, repository rulepacks, or development/fix gates.
+3. Specialty layer: load only the relevant reference for product prototype and interaction documents, PRD, database, interface, release, task trace, OpenSpec/Loops, repository rulepacks, or development/fix gates.
 
 ## What It Covers
 
 - Task classification: discussion, document, read-only analysis, implementation, fix, review, release, and traceability.
+- Product prototype and interaction requirements documents for app, mini program, and H5 pages.
 - Requirements, PRD, design, database, interface, task trace, and compliance review.
 - Secondary-development understanding and repository portraits.
 - AI workflow: batch gates, chain contracts, OpenSpec, Loops, and release checks.
@@ -43,6 +44,7 @@ Use three layers in order:
 Load only the reference relevant to the requested mode.
 
 - New idea or unclear scope: [references/project-startup.md](references/project-startup.md), [references/interview-questions.md](references/interview-questions.md), [references/prd-branch-flow.md](references/prd-branch-flow.md)
+- Product prototype and interaction doc: [references/prototype-interaction-doc.md](references/prototype-interaction-doc.md)
 - Secondary-development understanding: [references/project-understanding.md](references/project-understanding.md)
 - PRD or requirement docs: [references/prd-template.md](references/prd-template.md), [references/output-modes.md](references/output-modes.md), [references/doc-gen-rules.md](references/doc-gen-rules.md)
 - Interface or front/back closure: [references/interface-implementation-guide.md](references/interface-implementation-guide.md)
