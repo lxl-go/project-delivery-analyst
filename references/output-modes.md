@@ -12,6 +12,19 @@ Forbidden:
 
 - Database, table, field, index, cache, Redis, Kafka, MQ, Elasticsearch, WebSocket, HTTP, gRPC, API parameters, code, CI/CD, Docker, Kubernetes, DDD, framework names, deployment paths.
 
+## Persona-Specific Output
+
+Before producing a document, identify the target reader:
+
+| Persona | Use when | Emphasis | Avoid |
+| --- | --- | --- | --- |
+| Product manager | PRD, requirement analysis, prototype, interaction, acceptance | Business background, target users, page flow, role permissions, functional requirements, business rules, acceptance criteria | Framework names, database fields, middleware, deployment details |
+| Project manager | Project plan, delivery governance, schedule, risk, traceability | Scope, milestones, dependencies, owners, risks, blockers, acceptance materials, document synchronization | Low-level code detail unless it affects delivery risk |
+| Go full-stack engineer | Technical design, implementation guide, API/database review, code audit | Go framework, frontend framework, middleware, third-party APIs, service boundaries, DTOs, tables, transactions, idempotency, logs, tests | Unverified business expansion and invented provider details |
+| Testing/acceptance | Test plan, validation matrix, regression, compliance review | Scenario matrix, normal/boundary/exception/idempotency flows, evidence, uncovered risks | Implementation speculation without testable behavior |
+
+If the user states an identity, use it. If the identity is inferred, state the inference and keep unknowns as `待确认`.
+
 ## Hybrid Requirement
 
 Use when the user explicitly wants business requirements plus controlled technical acceptance content.
@@ -32,6 +45,8 @@ Use for implementation planning. It may include architecture, module boundaries,
 
 Technical design may be created from a PRD, but it must not add new business requirements without marking them as assumptions or questions.
 
+For Go full-stack engineer readers, include language, framework, middleware, third-party API, module ownership, service boundary, DTO, database, transaction, idempotency, logging, and verification sections when supported by documents or code evidence.
+
 ## Technical Review
 
 Use for formal review. It must include requirement traceability:
@@ -47,6 +62,8 @@ Use to create reusable project constraints under `.dev-rules/rule/`.
 Generate rules from provided project facts. Do not create team policy, architecture, security, or release constraints that have no source or explicit user confirmation.
 
 When the user asks for AI constraints, development guardrails, batch rules, or anti-fake-fix rules, read [ai-constraints.md](ai-constraints.md). Prefer human-readable project rules plus task-trace guidance over generic coding style rules.
+
+Rules must be derived from project facts, confirmed documents, or user confirmation. If the project is a microservice or layered application, include module-boundary and production-readiness rules from [production-code-standards.md](production-code-standards.md).
 
 ## Project Understanding
 
@@ -94,3 +111,9 @@ Use for every development or fix task. Read [task-trace-template.md](task-trace-
 Use when the user asks to check existing documents.
 
 Do not regenerate the document body. Produce only the report unless remediation is explicitly requested.
+
+## Document/Code Alignment Audit
+
+Use when the user asks whether code follows documents, whether a task was implemented according to PRD/API/database/technical design, or whether an existing implementation can run. Read [document-code-alignment.md](document-code-alignment.md).
+
+The output must compare confirmed documents, code evidence, and runtime evidence. Do not mark an item complete unless runtime evidence exists.

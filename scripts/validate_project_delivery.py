@@ -22,6 +22,7 @@ REQUIRED_REFERENCES = [
     "compliance-rules.md",
     "cross-platform-adapter.md",
     "database-template.md",
+    "document-code-alignment.md",
     "dev-and-fix-flows.md",
     "diagrams-template.md",
     "doc-gen-rules.md",
@@ -33,6 +34,7 @@ REQUIRED_REFERENCES = [
     "prd-template.md",
     "project-startup.md",
     "project-understanding.md",
+    "production-code-standards.md",
     "release-checklist.md",
     "releases-v1.3.0.md",
     "repository-workflow.md",
@@ -61,6 +63,8 @@ TASK_GATE_FIELDS = [
     "禁止修改范围",
     "本轮核心验收标准",
     "发现非本批次问题处理规则",
+    "文档到代码贴合核验",
+    "模块边界与生产级验收",
 ]
 
 MODE_RULES = {
@@ -87,15 +91,72 @@ MODE_RULES = {
             ("非功能", "技术验收", "服务边界", "外部依赖", "工单"),
         ],
     },
+    "api": {
+        "min_chars": 800,
+        "min_headings": 6,
+        "heading_groups": [
+            ("文档边界", "需求溯源", "来源", "依据"),
+            ("通用约定", "请求头", "统一响应", "错误码"),
+            ("接口", "服务"),
+            ("请求", "入参", "DTO"),
+            ("响应", "出参", "DTO"),
+            ("仍未闭环", "待确认", "风险"),
+        ],
+    },
+    "database": {
+        "min_chars": 800,
+        "min_headings": 8,
+        "heading_groups": [
+            ("建模依据", "来源", "证据"),
+            ("建模结论", "总体"),
+            ("主键", "乐观锁"),
+            ("关系", "关联"),
+            ("字段", "数据表", "表"),
+            ("枚举", "状态"),
+            ("事务", "幂等", "锁"),
+            ("不建表", "不新增表", "待确认"),
+        ],
+    },
+    "prd": {
+        "min_chars": 600,
+        "min_headings": 8,
+        "heading_groups": [
+            ("项目背景", "业务背景"),
+            ("产品定位", "目标"),
+            ("目标用户", "用户"),
+            ("版本范围", "范围"),
+            ("角色", "权限"),
+            ("流程", "闭环"),
+            ("功能", "需求"),
+            ("验收", "非功能", "异常"),
+        ],
+    },
+    "prototype": {
+        "min_chars": 800,
+        "min_headings": 10,
+        "heading_groups": [
+            ("项目概述", "项目背景", "版本目标"),
+            ("目标用户", "用户"),
+            ("业务流程", "用户主流程", "分支流程", "闭环流程"),
+            ("页面原型", "页面清单", "页面总览"),
+            ("分页面", "详细需求", "页面元素"),
+            ("交互规则", "交互"),
+            ("异常情况", "空页面", "报错", "失败"),
+            ("页面跳转", "跳转去向", "导航"),
+            ("全局", "通用规则"),
+            ("非功能", "适配", "性能", "可用性"),
+            ("附录", "修改记录"),
+        ],
+    },
     "technical": {
         "min_chars": 500,
         "min_headings": 6,
         "heading_groups": [
-            ("需求溯源", "评审范围", "来源"),
+            ("需求溯源", "评审范围", "来源", "依据", "项目结论"),
             ("架构", "技术选型"),
             ("模块", "边界"),
             ("流程", "接口", "集成"),
-            ("风险", "回滚"),
+            ("风险", "回滚", "熔断", "降级", "失败处理", "评审结论"),
         ],
     },
     "project-understanding": {
@@ -330,8 +391,20 @@ def require_hard_evidence_labels(text, mode):
     return failures
 
 
+def require_regexes(text, patterns, scope):
+    failures = 0
+    for label, pattern in patterns:
+        if not re.search(pattern, text, re.I | re.S):
+            emit("FAIL", f"{scope} missing required contract: {label}")
+            failures += 1
+    return failures
+
+
 def analyze_doc(doc, mode):
     text = read_text(doc)
+    if mode not in MODE_RULES:
+        emit("FAIL", f"unknown validation mode: {mode}")
+        return 1
     rules = MODE_RULES[mode]
     failures = 0
     warnings = 0
@@ -383,9 +456,84 @@ def analyze_doc(doc, mode):
         if not re.search(r"需求(?:ID|编号)|来源\s*[:：]|PRD|工单|用户(?:已)?确认", text, re.I):
             emit("FAIL", "technical document lacks a concrete traceability marker")
             failures += 1
+        if re.search(r"(?:直接)?在?一?个文件(?:中)?(?:完成|实现|写完|堆)|单文件(?:完成|实现|堆叠|假实现)|所有逻辑(?:都)?(?:写|放|塞).*文件", text):
+            emit("FAIL", "technical document allows single-file or architecture-bypassing implementation")
+            failures += 1
         if not re.search(r"缓解|应对|回滚|降低|规避", text):
             emit("WARN", "technical risks may lack mitigation")
             warnings += 1
+
+    if mode == "prd":
+        failures += require_regexes(
+            text,
+            [
+                ("requirement ID", r"需求ID|需求编号|\b[A-Z]{1,6}-\d{2,}\b"),
+                ("priority", r"优先级|P0|P1|P2"),
+                ("acceptance criteria", r"验收口径|验收标准|验收"),
+                ("version scope in/out", r"第一版要做|本期范围|in scope|第一版不做|不做|out of scope"),
+                ("role permission", r"角色|权限"),
+                ("exception or non-functional section", r"异常场景|非功能需求|可靠性|隐私"),
+            ],
+            mode,
+        )
+
+    if mode == "prototype":
+        failures += require_regexes(
+            text,
+            [
+                ("project overview", r"项目概述|项目背景"),
+                ("version goal", r"版本目标|第一版|MVP|本期范围"),
+                ("target user", r"目标用户|用户角色"),
+                ("main flow", r"用户主流程|主流程|整体业务流程"),
+                ("branch flow", r"分支流程|关键分支|异常分支"),
+                ("page list", r"页面清单|页面列表"),
+                ("page elements", r"页面元素"),
+                ("interaction rules", r"交互规则"),
+                ("exception states", r"异常情况|空状态|空页面|报错|失败"),
+                ("navigation destination", r"页面跳转去向|跳转去向|跳转"),
+                ("global rules", r"全局通用规则|全局规则|通用规则"),
+                ("non-functional requirements", r"非功能要求|非功能需求|适配平台|性能要求"),
+                ("appendix or revision history", r"附录|修改记录"),
+            ],
+            mode,
+        )
+
+    if mode == "api":
+        failures += require_regexes(
+            text,
+            [
+                ("source traceability", r"依据|来源|需求溯源|PRD"),
+                ("frontend entry", r"前端入口"),
+                ("frontend API method", r"前端调用|API\s*方法|services?/"),
+                ("backend route", r"后端路由|POST\s+/|GET\s+/|PUT\s+/|DELETE\s+/"),
+                ("authentication", r"是否鉴权|鉴权|Authorization"),
+                ("backend service", r"后端服务|service|rpc"),
+                ("request DTO", r"请求\s*DTO|请求参数|入参"),
+                ("response DTO", r"响应\s*DTO|返回参数|出参"),
+                ("field table", r"字段\s*\|\s*类型|字段.*类型.*必填"),
+                ("affected storage", r"涉及表|数据库|Redis|MQ|ES|第三方"),
+                ("unified response or error code", r"统一响应|错误码|code"),
+            ],
+            mode,
+        )
+
+    if mode == "database":
+        failures += require_regexes(
+            text,
+            [
+                ("modeling basis", r"建模依据|来源|证据状态"),
+                ("field definition table", r"字段名\s*\|\s*类型\s*\|\s*索引\s*\|\s*空\s*\|\s*备注\s*\|\s*依据"),
+                ("primary key strategy", r"主键|PK|雪花|auto_increment|UUID"),
+                ("index strategy", r"索引|IDX|UK|FULLTEXT"),
+                ("relationship list", r"关系|一对多|一对一|多对多"),
+                ("enum list", r"枚举|status|状态"),
+                ("transaction design", r"事务"),
+                ("idempotency design", r"幂等|idempotency_key"),
+                ("lock/concurrency design", r"锁|乐观锁|version|并发"),
+                ("tables not created", r"不建表|不新增表|第一版不建表"),
+            ],
+            mode,
+        )
 
     if mode == "project-understanding":
         failures += require_hard_evidence_labels(text, mode)

@@ -13,6 +13,7 @@ Prevent these failure modes:
 - Fake fixes that only change appearance or mock data.
 - Hard-coded URL, token, role, status, config, or third-party fields.
 - Production-unready code that ignores permissions, validation, transactions, idempotency, concurrency, logs, errors, and performance.
+- Single-file fake implementation that bypasses the project's module, service, microservice, API wrapper, controller, service, repository, adapter, or configuration boundaries.
 - Invented third-party APIs, config, SDK usage, callbacks, signatures, schemas, or performance numbers.
 - Frontend/backend mismatch, Chinese encoding pollution, large integer ID precision loss, and fake frontend implementation.
 - Sensitive information leaking into logs, examples, task traces, screenshots, commands, or generated documents.
@@ -31,12 +32,14 @@ Prevent these failure modes:
 - Ask the user when third-party API docs, config, secrets, callbacks, signing rules, or SDK usage are missing.
 - Do not fabricate third-party fields, schemas, configuration, callbacks, signatures, SDK behavior, or performance numbers.
 - Do not present mock, sample, temporary, or local-only code as production-ready.
+- Do not present one-file, architecture-bypassing, or module-bypassing code as production-ready when the project has established layers or services.
 - Do not hard-code URLs, tokens, roles, status values, or config unless the project has an explicit existing rule.
 - Consider permission, parameter validation, transactions, idempotency, concurrency, logs, exceptions, and performance.
 - For frontend/backend work, verify page entry, API method, backend route, DTOs, database handling, and status flow.
 - Protect large integer IDs from JavaScript precision loss; use strings when needed.
 - Avoid Chinese garbling or encoding pollution in code and documents.
 - Do not implement only frontend fake behavior; verify real interface closure.
+- Do not move backend business rules into frontend-only checks when the rule affects permissions, ownership, money, state transitions, persistence, or external side effects.
 - If tests were not run, do not say "completed"; mark the status as `仍未闭环`.
 - Safe read-only inspection may continue while facts are being established, but it does not authorize modification or scope expansion.
 
@@ -58,6 +61,8 @@ When generating project AI constraints, include only dimensions supported by pro
 - Self-test and acceptance rules.
 - Out-of-scope issue registration rules.
 - Local-development relaxation and release correction rules.
+- Module-boundary and production-readiness rules.
+- Document-to-code traceability rules.
 
 ## 4. Security And Logging
 
@@ -79,7 +84,21 @@ When implementation is allowed:
 - Comments must explain why the logic exists, not restate what the code does.
 - Do not add boilerplate logs, comments, locks, caches, or abstractions without a concrete need.
 
-## 6. Local Vs Release
+## 6. Anti Fake Implementation Gate
+
+Before accepting implementation, check:
+
+- Does every changed file belong to an intended project layer?
+- Does the change reuse existing API wrappers, routes, services, repositories, middleware, config, and adapters where they exist?
+- Is business logic enforced in the backend/domain layer when integrity or permissions matter?
+- Are database operations isolated in the expected repository/DAO layer?
+- Are third-party calls isolated behind adapters or service clients?
+- Are config, provider choice, URLs, prompts, and secrets read from existing configuration paths instead of being hard-coded?
+- Is the behavior proven by tests or real requests rather than static code existence?
+
+If any answer is no, mark the item `仍未闭环` and describe the missing production step. Use [production-code-standards.md](production-code-standards.md) for the full review.
+
+## 7. Local Vs Release
 
 Local development may temporarily use mocks, test config, switches, logs, or relaxed validation for testing convenience. These must be marked as local temporary items.
 
