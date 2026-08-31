@@ -86,6 +86,7 @@ python scripts/validate_project_delivery.py --doc path/to/PRD.md --mode prd
 python scripts/validate_project_delivery.py --doc path/to/document.md --mode technical
 python scripts/validate_project_delivery.py --doc path/to/api.md --mode api
 python scripts/validate_project_delivery.py --doc path/to/database.md --mode database
+python scripts/validate_project_delivery.py --doc path/to/alignment.md --mode alignment
 python scripts/validate_project_delivery.py --doc path/to/project-understanding.md --mode project-understanding
 python scripts/validate_project_delivery.py --doc path/to/task-trace.md --mode task-trace
 ```

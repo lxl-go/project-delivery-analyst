@@ -1,10 +1,20 @@
 # Project Delivery Analyst
 
-版本：`v1.3.0`
+版本：`v2.0.0`
 
 `project-delivery-analyst` 是一个面向 Codex / AI 编程助手的通用任务路由 Skill。它不只处理项目交付，还负责先判断任务该走哪条路，再按需进入产品原型与交互需求文档、需求梳理、项目理解、技术设计、数据库设计、接口落地、AI 工作流约束、仓库规则工作流包、开发门禁、任务追溯、发布准备和合规校验。
 
 它适合用于 0-1 项目启动、二次开发项目接手、功能修复、逻辑修复、交付文档生成、上线前纠偏，以及给 AI 编程助手生成项目级约束规则。若任务本身不是交付类，它会优先做分流和最小必要检查，而不是强行套完整流程。
+
+## v2.0.0 当前能力
+
+- 身份分流：先识别使用者视角，再输出对应深度的文档。产品经理侧重业务目标、范围、用户、流程和验收；项目经理侧重范围、里程碑、风险和追溯；Go 全栈工程师侧重技术栈、语言框架、中间件、第三方 API、DTO、数据库、事务、幂等、日志和测试。
+- 五类标准交付文档：产品原型与交互需求文档、需求分析文档 PRD、技术方案/技术评审、接口文档、数据库表设计文档都有独立结构规则和校验模式。
+- AI 约束规则生成：支持按项目、批次和任务生成门禁规则，包含允许范围、禁止范围、链路契约、影响文件清单、证据标签和非本批次问题登记。
+- 文档作为实现依据：要求开发、修复和评审优先追溯到已确认文档，缺少文档、代码或运行证据时必须标记 `仍未闭环`，不能靠猜测补齐。
+- 文档倒推代码核验：新增 `alignment` 校验模式，用文档需求反查前端入口、API wrapper、后端路由、DTO、service、repository、数据库、事务幂等、第三方依赖、日志 trace 安全和测试证据。
+- 生产级实现门禁：明确拒绝单文件堆逻辑、前端假效果、mock-only、绕过模块边界、未测试却声称完成等交付方式。
+- 有界推进：通过批次门禁、OpenSpec / Loops、任务追溯和验收材料，减少任务原地打转、无限扫描和无边界修复。
 
 ## v1.3.0 更新内容
 
@@ -210,7 +220,33 @@ Loops 思路用于控制执行：每轮只读当前阶段和短摘要，失败�
 - 修复建议
 - 仍未闭环事项
 
-### 10. 仓库规则工作流包
+### 10. 文档倒推代码核验
+
+适用于“代码有没有按文档做”“文档写得很好但实现是不是乱猜”“功能是不是真的跑通”“AI 是否只做了表面验收”这类任务。
+
+它会从已确认的交互文档、PRD、技术方案、接口文档和数据库设计倒推代码证据，逐项检查：
+
+- 前端入口/页面动作
+- 前端 API wrapper / services
+- 后端路由 / Gateway
+- 请求 DTO 和响应 DTO
+- service / domain / RPC
+- repository / DAO / 数据库表
+- 事务、锁、幂等、状态、并发
+- 第三方 API、中间件、Redis、MQ、ES、对象存储或模型服务
+- 日志、trace、安全和脱敏
+- 单测、构建、接口请求、数据库读写或运行日志
+
+可产出：
+
+- `document-code-alignment.md`
+- 文档到代码对齐矩阵
+- 反向链路核验清单
+- 运行证据清单
+- 缺口与后续动作
+- 未闭环风险登记
+
+### 11. 仓库规则工作流包
 
 适用于“给项目生成 AGENTS.md”“把 AI 研发规则落到仓库”“生成 aiDoc / workflow 目录”“建立 REQ / BUG / CHORE 工作项闭环”这类任务。
 
@@ -399,6 +435,17 @@ project-delivery-analyst/
 python scripts/validate_project_delivery.py --skill-root .
 ```
 
+按文档类型校验：
+
+```bash
+python scripts/validate_project_delivery.py --doc path/to/prototype.md --mode prototype
+python scripts/validate_project_delivery.py --doc path/to/PRD.md --mode prd
+python scripts/validate_project_delivery.py --doc path/to/technical.md --mode technical
+python scripts/validate_project_delivery.py --doc path/to/api.md --mode api
+python scripts/validate_project_delivery.py --doc path/to/database.md --mode database
+python scripts/validate_project_delivery.py --doc path/to/alignment.md --mode alignment
+```
+
 运行单元测试：
 
 ```bash
@@ -409,6 +456,7 @@ python -m unittest discover -s tests
 
 ## 发布说明
 
+- `v2.0.0`：身份分流、五类交付文档标准、AI 约束规则、文档倒推代码核验、生产级实现门禁和 `alignment` 校验模式。
 - `v1.3.0`：主控路由升级、AI 工作流路由、OpenSpec / Loops 支持、README 详细化。
 - `v1.2.0`：证据驱动的数据库建模工作流。
 - `v1.1.0`：项目交付分析 Skill 发布准备。

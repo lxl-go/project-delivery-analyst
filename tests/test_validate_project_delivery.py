@@ -34,6 +34,7 @@ class SkillValidationTests(unittest.TestCase):
             "prd": "# 空文档\n\n需求 功能 用户",
             "prototype": "# 空文档\n\n页面 交互 跳转",
             "technical": "# 空文档\n\n业务 技术 架构 模块 风险 PRD",
+            "alignment": "# 空文档\n\n文档 代码 运行证据",
             "project-understanding": "# 空文档\n\n读取范围 项目画像 可复用 目标差异 文档已确认 仍未闭环",
             "task-trace": "# 空文档\n\n当前批次 允许修改范围 禁止修改范围 文档已确认 代码已存在 已测试通过 仍未闭环",
         }
@@ -579,6 +580,57 @@ articles 表保存文章事实，article_change_logs 记录创建审计。创建
 重复提交风险通过 idempotency_key 和唯一约束降低；MQ 失败通过补偿任务应对；真实生产域名仍未闭环，部署前确认。
 """
         self.assertEqual(self.validate_text(strong_technical, "technical"), 0)
+
+    def test_alignment_document_requires_reverse_chain_and_runtime_status(self):
+        weak_alignment = """# 文章保存文档倒推代码核验报告
+
+## 核验范围
+核验文章保存。
+
+## 核验矩阵
+| Document requirement | Source document and section | Expected code location | Actual code evidence | Runtime evidence | Status label | Gap / action |
+| --- | --- | --- | --- | --- | --- | --- |
+| 保存文章 | PRD KB-01 | pages/article/edit | 代码已存在 | 未执行接口测试 | 已完成 | 无 |
+"""
+        self.assertEqual(self.validate_text(weak_alignment, "alignment"), 1)
+
+        strong_alignment = """# 文章保存文档倒推代码核验报告
+
+## 1. 核验范围
+本次只核验 PRD KB-01 文章保存，不扩展评论和订阅。范围限定为前端保存入口、前端 API wrapper、后端 Gateway 路由、请求 DTO、响应 DTO、service/domain/RPC、repository/DAO、数据库表和对应测试证据。
+
+## 2. 核验依据
+文档已确认：来源为 PRD KB-01、接口文档创建文章、数据库表 articles。
+代码已存在：只能以实际路由、service、model、migration 或测试文件为证据。
+已测试通过：只能以命令、接口响应、构建日志、数据库读写记录或运行日志为证据。
+仍未闭环：没有运行证据、未读取代码或只有推断的项保持未闭环。
+
+## 3. 文档到代码对齐矩阵
+| Document requirement | Source document and section | Expected code location | Actual code evidence | Runtime evidence | Status label | Gap / action |
+| --- | --- | --- | --- | --- | --- | --- |
+| 文章编辑页保存文章 | PRD KB-01 / 接口文档 3.1 | pages/article/edit, services/article.ts#createArticle, POST /api/v1/articles, core-rpc.CreateArticle, articles model | 仍未读取代码，不能确认 | 未执行接口测试 | 仍未闭环 | 进入代码核验批次读取页面、service、Gateway、RPC、model、测试 |
+| 创建成功返回文章 ID | 接口文档响应 DTO | types CreateArticleResp, frontend rendering | 仍未读取代码，不能确认 | 未执行真实请求 | 仍未闭环 | 补充 API 测试和响应字段断言 |
+
+## 4. 反向链路核验清单
+- 前端入口/页面动作：文章编辑页保存按钮，仍未闭环。
+- 前端 API wrapper/services：services/article.ts#createArticle，仍未闭环。
+- 后端路由/Gateway：POST /api/v1/articles，仍未闭环。
+- 请求 DTO：title/content/idempotency_key，仍未闭环。
+- 响应 DTO：article_id/status/created_at，仍未闭环。
+- Service/domain/RPC：core-rpc.CreateArticle，仍未闭环。
+- Repository/DAO/数据库：articles/article_change_logs，仍未闭环。
+- 事务、锁、幂等、状态、并发：MySQL 事务、idempotency_key、version，仍未闭环。
+- 第三方 API/Redis/MQ/ES/object storage/model：Redis 幂等、MQ/ES 索引补偿，仍未闭环。
+- 日志、trace、安全：trace_id、权限过滤、敏感数据脱敏，仍未闭环。
+- 测试/live verification：未执行测试和真实请求，仍未闭环。
+
+## 5. 运行证据
+未执行测试、构建、接口请求或数据库迁移；所有缺少运行证据的项标为仍未闭环。
+
+## 6. 缺口与后续动作
+进入下一批次前先确认允许读取文件清单，再读取页面、services、Gateway、RPC、model、migration、test，并执行对应测试。
+"""
+        self.assertEqual(self.validate_text(strong_alignment, "alignment"), 0)
 
 
 if __name__ == "__main__":

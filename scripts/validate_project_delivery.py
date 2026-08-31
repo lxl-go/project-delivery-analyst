@@ -148,6 +148,18 @@ MODE_RULES = {
             ("附录", "修改记录"),
         ],
     },
+    "alignment": {
+        "min_chars": 700,
+        "min_headings": 6,
+        "heading_groups": [
+            ("核验范围", "审计范围", "文档倒推代码"),
+            ("核验依据", "来源", "依据"),
+            ("对齐矩阵", "核验矩阵", "Alignment Matrix"),
+            ("反向链路", "链路核验", "Required Reverse Checks"),
+            ("运行证据", "Runtime evidence", "测试证据"),
+            ("缺口", "Gap", "后续动作"),
+        ],
+    },
     "technical": {
         "min_chars": 500,
         "min_headings": 6,
@@ -400,6 +412,39 @@ def require_regexes(text, patterns, scope):
     return failures
 
 
+def validate_alignment_runtime_closure(text):
+    failures = 0
+    no_runtime_markers = (
+        "未执行",
+        "未测试",
+        "待验证",
+        "暂无",
+        "缺失",
+        "无运行证据",
+        "未联调",
+    )
+    false_closure_markers = (
+        "已完成",
+        "已闭环",
+        "完整闭环",
+        "生产可用",
+        "通过验收",
+    )
+
+    for line in text.splitlines():
+        if "|" not in line:
+            continue
+        if not any(marker in line for marker in no_runtime_markers):
+            continue
+        if "仍未闭环" not in line:
+            emit("FAIL", "alignment row without runtime evidence must be marked 仍未闭环")
+            failures += 1
+        if any(marker in line for marker in false_closure_markers):
+            emit("FAIL", "alignment row with missing runtime evidence claims closure")
+            failures += 1
+    return failures
+
+
 def analyze_doc(doc, mode):
     text = read_text(doc)
     if mode not in MODE_RULES:
@@ -497,6 +542,34 @@ def analyze_doc(doc, mode):
             ],
             mode,
         )
+
+    if mode == "alignment":
+        failures += require_hard_evidence_labels(text, mode)
+        failures += require_regexes(
+            text,
+            [
+                ("document requirement column", r"Document requirement|文档需求|需求项"),
+                ("source document and section column", r"Source document and section|来源文档|文档章节"),
+                ("expected code location column", r"Expected code location|预期代码位置|代码落点"),
+                ("actual code evidence column", r"Actual code evidence|实际代码证据"),
+                ("runtime evidence column", r"Runtime evidence|运行证据"),
+                ("status label column", r"Status label|状态标签"),
+                ("gap action column", r"Gap\s*/\s*action|缺口|后续动作"),
+                ("frontend entry or page action", r"前端入口|页面动作|页面.*按钮|保存按钮"),
+                ("frontend API wrapper", r"前端\s*API|API\s*wrapper|services?/|请求封装"),
+                ("backend route or gateway", r"后端路由|Gateway|网关|POST\s+/|GET\s+/|PUT\s+/|DELETE\s+/"),
+                ("request DTO", r"请求\s*DTO|入参\s*DTO|请求入参"),
+                ("response DTO", r"响应\s*DTO|出参\s*DTO|响应出参"),
+                ("service domain RPC", r"Service/domain/RPC|service|domain|rpc|业务服务方法"),
+                ("repository DAO database", r"Repository/DAO/数据库|repository|DAO|数据库|数据表"),
+                ("transaction lock idempotency status concurrency", r"事务|锁|幂等|状态|并发"),
+                ("third-party middleware dependency", r"第三方|Redis|MQ|ES|object storage|model provider|中间件|缓存|消息队列"),
+                ("logging trace security", r"日志|trace|安全|脱敏"),
+                ("test or live verification", r"测试|live verification|接口请求|构建|运行日志"),
+            ],
+            mode,
+        )
+        failures += validate_alignment_runtime_closure(text)
 
     if mode == "api":
         failures += require_regexes(

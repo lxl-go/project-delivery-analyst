@@ -71,3 +71,15 @@ Document/code alignment is not complete until there is runtime evidence appropri
 
 Build success alone does not prove business closure. Code existence alone does not prove runtime behavior.
 
+## 6. Alignment Validation Mode
+
+When a document is meant to be checked by `validate_project_delivery.py --mode alignment`, it must contain:
+
+- A clear audit scope that limits the document-to-code check to the confirmed batch or feature.
+- A source/evidence section using all four hard labels: `文档已确认`, `代码已存在`, `已测试通过`, `仍未闭环`.
+- An alignment matrix with document requirement, source document and section, expected code location, actual code evidence, runtime evidence, status label, and gap/action.
+- A reverse-chain checklist covering frontend entry, frontend API wrapper, backend route or gateway, request DTO, response DTO, service/domain/RPC, repository/DAO/database, transaction/lock/idempotency/status/concurrency, third-party or middleware dependencies, logging/trace/security, and tests or live verification.
+- A runtime evidence section that names the exact command, request, log, database check, build, screenshot, or other proof used for closure.
+- A gap/action section for every missing, inferred, unread, untested, or contradictory item.
+
+Any matrix row that lacks runtime evidence must be marked `仍未闭环`. Do not mark a row as complete, production-ready, accepted, or fully closed when the runtime evidence column says no test was executed, no request was made, or the behavior was only inferred.
